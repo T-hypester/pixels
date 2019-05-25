@@ -1,50 +1,63 @@
 import { UserInterface } from "../lib/ui/types";
-import { Point } from "../types/geometry";
 import World from "./World";
 import Player from "./Player";
 import Pixel from "./DefaultPixel";
 import FuzzyPathfinder from "./pathfinding/FuzzyPathfinder";
+import { Game } from "./types";
 
-export default class Game {
+const TEST_PIXEL_N = 400;
+
+type Teams = {
+  [team: string]: Player;
+};
+
+export default class DefaultGame implements Game {
   private ui: UserInterface;
-  private player: Player;
-  private pixels: Array<Pixel>;
-  private numberOfPixels = 400;
+  private pixels: Array<Pixel> = [];
+
+  private teams: Teams = {};
+  private world: World;
 
   constructor(ui: UserInterface) {
     this.ui = ui;
-
-    var world = new World(this.ui.height, this.ui.width);
-    this.player = new Player("red");
-    this.pixels = [];
-    for (let i = 0; i < this.numberOfPixels; i++) {
-      let pxl = new Pixel(world, new FuzzyPathfinder(world));
-      pxl.position = { x: i, y: i };
-      this.pixels[i] = pxl;
-    }
+    this.world = new World(this.ui.height, this.ui.width);
 
     requestAnimationFrame(this.render);
-
-    this.ui.onMove = this.setPlayerPosition;
 
     console.log("pixel!");
   }
 
-  private setPlayerPosition = (pos: Point) => {
-    this.player.position = pos;
-  };
+  addTeam(team: string, player: Player) {
+    this.teams[team] = player;
+
+    if (!this.pixels.length) {
+      for (let i = 0; i < TEST_PIXEL_N; i++) {
+        let pxl = new Pixel(this.world, new FuzzyPathfinder(this.world));
+        pxl.team = team;
+        pxl.position = { x: i, y: i };
+        this.pixels[i] = pxl;
+      }
+    }
+  }
 
   private render = () => {
-    if (this.player.position) {
-      for (let i = 0; i < this.pixels.length; i++) {
-        //const prevPos = Object.assign({}, this.pixels[i].position);
-        this.ui.clearPixel(this.pixels[i]);
-        this.pixels[i].moveToward(this.player.position);
-        //this.ui.clearPosition(prevPos);
-        this.ui.drawPixel(this.pixels[i]);
-      }
+    for (let team in this.teams) {
+      this.renderTeam(team);
     }
 
     requestAnimationFrame(this.render);
   };
+
+  private renderTeam(team: string) {
+    const player = this.teams[team];
+    if (!player) return;
+    if (player.position) {
+      for (let i = 0; i < this.pixels.length; i++) {
+        const prevPos = Object.assign({}, this.pixels[i].position);
+        this.pixels[i].moveToward(player.position);
+        this.ui.clearPosition(prevPos);
+        this.ui.drawPixel(this.pixels[i]);
+      }
+    }
+  }
 }

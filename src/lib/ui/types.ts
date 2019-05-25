@@ -8,5 +8,5 @@ export interface UserInterface {
   clearPosition(position: Point): void;
   clearPixel(pixel: Pixel): void;
   drawPixel(pixel: Pixel): void;
-  onMove: (position: Point) => void;
+  onMove?: (position: Point) => void;
 }

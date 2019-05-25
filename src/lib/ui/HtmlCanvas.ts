@@ -4,7 +4,7 @@ import Pixel from "../../app/DefaultPixel";
 import { UserInterface } from "./types";
 
 export default class HtmlCanvas implements UserInterface {
-  public onMove: (position: Point) => void;
+  public onMove?: (position: Point) => void;
 
   private canvas: HTMLCanvasElement;
   private ctx: CanvasRenderingContext2D;
@@ -15,9 +15,10 @@ export default class HtmlCanvas implements UserInterface {
     this.canvas = canvas;
     this.height = canvas.height;
     this.width = canvas.width;
-    this.onMove = () => undefined;
+
     if (canvas.getContext("2d")) {
       this.ctx = canvas.getContext("2d")!;
+      this.ctx.translate(-0.5,-0.5)
     } else {
       throw new Error("HtmlCanvas: Unable to acquire rendering context");
     }
@@ -26,8 +27,8 @@ export default class HtmlCanvas implements UserInterface {
   }
 
   drawPixel(pixel: Pixel) {
-    this.ctx.fillStyle = pixel.team || 'black';
-    this.ctx.fillRect(pixel.position.x, pixel.position.y, 1, 1);
+    this.ctx.fillStyle = pixel.team || "black";
+    this.ctx.fillRect(pixel.position.x + 0.5, pixel.position.y + 0.5, 1, 1);
   }
 
   clearPixel(pixel: Pixel) {
@@ -36,10 +37,11 @@ export default class HtmlCanvas implements UserInterface {
 
   clearPosition(position: Point) {
     this.ctx.fillStyle = "white";
-    this.ctx.fillRect(position.x, position.y, 1, 1);
+    this.ctx.fillRect(position.x + 0.5, position.y + 0.5, 1, 1);
   }
 
   onMouseMove = (evt: MouseEvent) => {
+    if (!this.onMove) return;
     this.onMove(
       this.getPositionFromPointer({
         x: evt.offsetX,

@@ -56,7 +56,7 @@ module.exports = {
 	},
 
 	entry: {
-		main: './src/main.js',
+		main: './src/main.ts',
 		app: './src/app/index.ts',
 		lib: './src/lib/index.ts'
 	},

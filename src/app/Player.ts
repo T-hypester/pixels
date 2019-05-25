@@ -3,13 +3,13 @@ import { Point } from "../types/geometry";
 export default class Player {
   public position?: Point;
 
-  private _color: string;
+  private _team: string;
 
-  constructor(color: string) {
-    this._color = color;
+  constructor(team: string) {
+    this._team = team;
   }
 
-  get color() {
-    return this._color;
+  get team() {
+    return this._team;
   }
 }
