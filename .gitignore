@@ -1,0 +1,4 @@
+dist
+node_modules
+.yo-rc.json
+*-error.log
