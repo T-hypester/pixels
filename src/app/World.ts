@@ -1,31 +1,57 @@
-import Pixel from "./DefaultPixel";
-import { Point } from "../types/geometry";
+import { Point } from "../lib/geometry/types";
+import { World, Unit } from "./types";
 
-export default class World {
-  private height: number;
-  private width: number;
+export default class DefaultWorld implements World {
+  height: number;
+  width: number;
 
-  private pixels: Array<Array<Pixel | null>>;
+  private positions: Array<Array<Unit | boolean>>;
 
   constructor(width: number, height: number) {
     this.width = width;
     this.height = height;
 
-    this.pixels = new Array(this.width);
+    this.positions = new Array(this.width);
     for (let x = 0; x < this.width; x++) {
-      this.pixels[x] = new Array(this.height);
+      this.positions[x] = new Array(this.height);
+      for (let y = 0; y < this.height; y++) {
+        this.positions[x][y] = true;
+      }
     }
   }
 
-  isEmptyAt(point: Point): boolean {
+  getPosition<C extends Point>(point: C) {
     if (point.x < 0 || point.y < 0) return false;
     if (point.x >= this.width || point.y >= this.height) return false;
-    if (this.pixels[point.x][point.y]) return false;
+    if (this.positions[point.x][point.y] !== undefined) return this.positions[point.x][point.y];
+    return false;
+  }
+
+  deployUnit<C extends Point>(pixel: Unit, point: C) {
+    this.updateUnitPosition(pixel, point);
     return true;
   }
 
-  setPixelAt(point: Point, pixel: Pixel | null): boolean {
-    this.pixels[point.x][point.y] = pixel;
-    return true;
+  moveUnit<C extends Point>(unit: Unit, position: C) {
+    if (this.getPosition(position) === true) {
+      if (unit.position) this.clearPosition(unit.position.current);
+      this.updateUnitPosition(unit, position);
+      return true;
+    }
+    return false;
+  }
+
+  private clearPosition<C extends Point>(p: C) {
+    this.positions[p.x][p.y] = true;
+  }
+
+  private updateUnitPosition<C extends Point>(unit: Unit, position: C) {
+    this.positions[position.x][position.y] = unit;
+    if (unit.position) unit.position.current = position;
+    else
+      unit.position = {
+        current: position,
+        moveTo: (pos: C) => this.moveUnit(unit, pos)
+      };
   }
 }

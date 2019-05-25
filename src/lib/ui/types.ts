@@ -1,4 +1,4 @@
-import { Point } from "../../types/geometry";
+import { Point } from "../geometry/types";
 import Pixel from "../../app/DefaultPixel";
 
 export interface UserInterface {

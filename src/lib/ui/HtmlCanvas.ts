@@ -1,4 +1,4 @@
-import { Point } from "../../types/geometry";
+import { Point } from "../geometry/types";
 import Pixel from "../../app/DefaultPixel";
 
 import { UserInterface } from "./types";
@@ -27,12 +27,14 @@ export default class HtmlCanvas implements UserInterface {
   }
 
   drawPixel(pixel: Pixel) {
+    if (!pixel.position) return;
     this.ctx.fillStyle = pixel.team || "black";
-    this.ctx.fillRect(pixel.position.x + 0.5, pixel.position.y + 0.5, 1, 1);
+    this.ctx.fillRect(pixel.position.current.x + 0.5, pixel.position.current.y + 0.5, 1, 1);
   }
 
   clearPixel(pixel: Pixel) {
-    this.clearPosition(pixel.position);
+    if (!pixel.position) return;
+    this.clearPosition(pixel.position.current);
   }
 
   clearPosition(position: Point) {

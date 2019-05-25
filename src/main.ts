@@ -1,7 +1,7 @@
 import Game from "./app/Game";
 import HtmlCanvas from "./lib/ui/HtmlCanvas";
 import Player from "./app/Player";
-import { Point } from "./types/geometry";
+import { Point } from "./lib/geometry/types";
 
 const canvas = getCanvas();
 if (canvas) initGame(canvas);
