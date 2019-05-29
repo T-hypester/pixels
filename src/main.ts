@@ -2,6 +2,8 @@ import Game from "./app/Game";
 import HtmlCanvas from "./lib/ui/HtmlCanvas";
 import Player from "./app/Player";
 import MouseInputMapping from "./lib/ui/MouseInputMapping";
+import SimpleTeam from "./app/SimpleTeam";
+import RGBColor from "./lib/ui/RGBColor";
 
 const canvas = getCanvas();
 if (canvas) initGame(canvas);
@@ -24,5 +26,6 @@ function initGame(canvas: HTMLCanvasElement): void {
   game.putObstacle({ x: 200, y: 210 }, { x: 300, y: 215 });
   game.putObstacle({ x: 200, y: 250 }, { x: 300, y: 265 });
 
-  game.addTeam("orange", player);
+  const team = new SimpleTeam(new RGBColor(255,150,55))
+  game.addTeam(team, player);
 }

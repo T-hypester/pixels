@@ -1,13 +1,13 @@
 import World from "./World";
 import { Point } from "../lib/geometry/types";
 import { Pathfinder } from "../lib/pathfinding/types";
-import { Unit as Pixel, Position } from "./types";
+import { Unit as Pixel, Position, Team } from "./types";
 import FuzzyPathfinder from "../lib/pathfinding/FuzzyPathfinder";
 
 export default class DefaultPixel implements Pixel {
-  public health: number = 255;
+  public health: number = 1;
   public position?: Position<Point>;
-  public team?: string;
+  public team?: Team;
 
   public pathfinder: Pathfinder<Point>;
 
