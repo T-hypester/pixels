@@ -1,7 +1,7 @@
 import Game from "./app/Game";
 import HtmlCanvas from "./lib/ui/HtmlCanvas";
 import Player from "./app/Player";
-import { Point } from "./lib/geometry/types";
+import MouseInputMapping from "./lib/ui/MouseInputMapping";
 
 const canvas = getCanvas();
 if (canvas) initGame(canvas);
@@ -16,9 +16,7 @@ function initGame(canvas: HTMLCanvasElement): void {
   const ui = new HtmlCanvas(canvas);
 
   const player = new Player();
-  ui.onMove = (pos: Point) => {
-    player.position = pos;
-  };
+  new MouseInputMapping(player, ui);
 
   const game = new Game(ui);
 
