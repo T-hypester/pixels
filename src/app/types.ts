@@ -1,6 +1,6 @@
 import Player from "./Player"
 import { Point } from "../lib/geometry/types"
-import { Color } from "../lib/ui/types";
+import { Color } from "../lib/ui/types"
 
 export interface Position<C extends Point> {
   current: C
@@ -9,6 +9,7 @@ export interface Position<C extends Point> {
 
 export interface Team {
   color: Color
+  player?: Player
 }
 
 export interface Unit {

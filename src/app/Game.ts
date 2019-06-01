@@ -30,8 +30,9 @@ export default class DefaultGame implements Game {
     console.log("pixel!")
   }
 
-  addTeam(team: Team, player: Player) {
-    this.teams[team.color.toCSS()] = player
+  addTeam(team: Team) {
+    if (!team.player) return
+    this.teams[team.color.toCSS()] = team.player
 
     for (let i = 0; i < TEST_PIXEL_N; i++) {
       if (this.world.getPosition({ x: i, y: i }) !== true) continue
@@ -55,7 +56,7 @@ export default class DefaultGame implements Game {
   private render = () => {
     for (let i = 0; i < this.pixels.length; i++) {
       const pxl = this.pixels[i]
-      const player = pxl.team ? this.teams[pxl.team.color.toCSS()] : undefined
+      const player = pxl.team && pxl.team.player
 
       if (player && player.position) {
         const prevPos = this.pixels[i].position!.current

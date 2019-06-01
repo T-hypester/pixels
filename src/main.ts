@@ -27,5 +27,6 @@ function initGame(canvas: HTMLCanvasElement): void {
   game.putObstacle({ x: 200, y: 250 }, { x: 300, y: 265 });
 
   const team = new SimpleTeam(new RGBColor(255,150,55))
-  game.addTeam(team, player);
+  team.player = player
+  game.addTeam(team);
 }
