@@ -4,11 +4,11 @@ import { mock } from "sinon"
 import { Point } from "../lib/geometry/types"
 
 import PixelRenderer from "./PixelRenderer"
-import { Position, Unit, Team } from "./types"
 import { UserInterface } from "../lib/ui/types"
 import DefaultWorld from "./World"
 import RGBColor from "../lib/ui/RGBColor"
 import SimpleTeam from "./SimpleTeam"
+import Pixel from "./units/Pixel";
 
 describe("PixelRenderer", function() {
   beforeEach(function() {
@@ -17,8 +17,8 @@ describe("PixelRenderer", function() {
     this.renderer = new PixelRenderer(this.ui)
   })
 
-  it("draws units if they have been deployed inside a world", function() {
-    const pxl = new SimplePixel()
+  it("draws Pixels if they have been deployed inside the World", function() {
+    const pxl = new Pixel(this.world)
     this.world.deployUnit(pxl, { x: 10, y: 10 })
 
     const m = mock(this.ui)
@@ -29,8 +29,8 @@ describe("PixelRenderer", function() {
     m.verify()
   })
 
-  it("draws pixels with team's color", function() {
-    const pxl = new SimplePixel()
+  it("draws Pixels with their Team's color", function() {
+    const pxl = new Pixel(this.world)
     this.world.deployUnit(pxl, { x: 10, y: 10 })
 
     pxl.team = new SimpleTeam(new RGBColor(255, 0, 0))
@@ -45,8 +45,8 @@ describe("PixelRenderer", function() {
     m.verify()
   })
 
-  it("draws pixel with color proportional to pixel's health", function() {
-    const pxl = new SimplePixel()
+  it("draws Pixels with a color proportional to unit's health", function() {
+    const pxl = new Pixel(this.world)
     this.world.deployUnit(pxl, { x: 10, y: 10 })
 
     pxl.team = new SimpleTeam(new RGBColor(255, 0, 0))
@@ -63,16 +63,6 @@ describe("PixelRenderer", function() {
   })
 })
 
-class SimplePixel implements Unit {
-  health: number = 1
-  position?: Position<any>
-  team?: Team
-
-  moveToward<C extends Point>(position: C): void {
-    throw new Error("Method not implemented.")
-  }
-}
-
 class DummyCanvas implements UserInterface {
   width: number = 100
   height: number = 100
@@ -83,7 +73,7 @@ class DummyCanvas implements UserInterface {
   clearPosition(position: Point): void {
     throw new Error("Method not implemented.")
   }
-  clearPixel(pixel: import("./DefaultPixel").default): void {
+  clearPixel(pixel: import("./units/Pixel").default): void {
     throw new Error("Method not implemented.")
   }
   onMove?: ((position: Point) => void) | undefined

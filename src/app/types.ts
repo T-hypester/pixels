@@ -1,10 +1,12 @@
 import Player from "./Player"
-import { Point } from "../lib/geometry/types"
 import { Color } from "../lib/ui/types"
+import { Unit } from "./units/types";
+import { Cartesian2D } from "../lib/geometry/types";
 
-export interface Position<C extends Point> {
-  current: C
-  moveTo(position: C): boolean
+export interface Position {
+  available: boolean
+  coordinates: Cartesian2D
+  units: Unit[]
 }
 
 export interface Team {
@@ -12,19 +14,12 @@ export interface Team {
   player?: Player
 }
 
-export interface Unit {
-  health: number
-  position?: Position<any>
-  team?: Team
-  moveToward<C extends Point>(position: C): void
-}
-
-export interface World {
+export interface World<C> {
   height: number
   width: number
-  deployUnit<C extends Point>(unit: Unit, position: C): void
-  moveUnit<C extends Point>(unit: Unit, position: C): boolean
-  getPosition<C extends Point>(position: C): Unit | boolean
+  deployUnit(unit: Unit, position: C): void
+  moveUnit(unit: Unit, position: C): boolean
+  getPosition(position: C): Position
 }
 
 export interface Game {

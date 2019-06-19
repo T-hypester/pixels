@@ -1,8 +1,7 @@
-import { Point } from "../geometry/types"
-import Pixel from "../../app/DefaultPixel"
+import { Point, Cartesian2D } from "../geometry/types"
+import Pixel from "../../app/units/Pixel"
 
 import { UserInterface, Color } from "./types"
-import RGBColor from "./RGBColor"
 
 export default class HtmlCanvas implements UserInterface {
   public onMove?: (position: Point) => void
@@ -36,20 +35,9 @@ export default class HtmlCanvas implements UserInterface {
     throw new Error("Method not implemented.")
   }
 
-  /* drawPixel(pixel: Pixel) {
-    if (!pixel.position) return
-    this.ctx.fillStyle = (pixel.team && pixel.team.color.toCSS()) || "black"
-    this.ctx.fillRect(
-      pixel.position.current.x + 0.5,
-      pixel.position.current.y + 0.5,
-      1,
-      1
-    )
-  } */
-
   clearPixel(pixel: Pixel) {
     if (!pixel.position) return
-    this.clearPosition(pixel.position.current)
+    this.clearPosition(pixel.position.current.coordinates)
   }
 
   clearPosition(position: Point) {
@@ -60,17 +48,14 @@ export default class HtmlCanvas implements UserInterface {
   onMouseMove = (evt: MouseEvent) => {
     if (!this.onMove) return
     this.onMove(
-      this.getPositionFromPointer({
-        x: evt.offsetX,
-        y: evt.offsetY
-      })
+      this.getPositionFromPointer(new Cartesian2D(evt.offsetX, evt.offsetY))
     )
   }
 
-  private getPositionFromPointer({ x, y }: Point) {
-    return {
-      x: Math.floor((x * this.width) / this.canvas.clientWidth),
-      y: Math.floor((y * this.height) / this.canvas.clientHeight)
-    }
+  private getPositionFromPointer(point: Point) {
+    return new Cartesian2D(
+      Math.floor((point.x * this.width) / this.canvas.clientWidth),
+      Math.floor((point.y * this.height) / this.canvas.clientHeight)
+    )
   }
 }

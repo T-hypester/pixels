@@ -1,57 +1,71 @@
-import { Point } from "../lib/geometry/types";
-import { World, Unit } from "./types";
+import { Point, Cartesian2D } from "../lib/geometry/types"
+import { World, Position } from "./types"
+import { Unit } from "./units/types"
 
-export default class DefaultWorld implements World {
-  height: number;
-  width: number;
+export default class DefaultWorld implements World<Point> {
+  height: number
+  width: number
 
-  private positions: Array<Array<Unit | boolean>>;
+  private positions: Array<Array<Position>>
 
   constructor(width: number, height: number) {
-    this.width = width;
-    this.height = height;
+    this.width = width
+    this.height = height
 
-    this.positions = new Array(this.width);
+    this.positions = new Array(this.width)
     for (let x = 0; x < this.width; x++) {
-      this.positions[x] = new Array(this.height);
+      this.positions[x] = new Array(this.height)
       for (let y = 0; y < this.height; y++) {
-        this.positions[x][y] = true;
+        const coords = new Cartesian2D()
+        coords.x = x
+        coords.y = y
+        this.positions[x][y] = {
+          available: true,
+          coordinates: coords,
+          units: []
+        }
       }
     }
   }
 
-  getPosition<C extends Point>(point: C) {
-    if (point.x < 0 || point.y < 0) return false;
-    if (point.x >= this.width || point.y >= this.height) return false;
-    if (this.positions[point.x][point.y] !== undefined) return this.positions[point.x][point.y];
-    return false;
+  getPosition(point: Point) {
+    if (
+      point.x < 0 ||
+      point.y < 0 ||
+      (point.x >= this.width || point.y >= this.height)
+    )
+      throw new Error(`undefined position: x=${point.x} y=${point.y}`)
+    return this.positions[point.x][point.y]
   }
 
   deployUnit<C extends Point>(pixel: Unit, point: C) {
-    this.updateUnitPosition(pixel, point);
-    return true;
+    this.updateUnitPosition(pixel, point)
+    return true
   }
 
   moveUnit<C extends Point>(unit: Unit, position: C) {
-    if (this.getPosition(position) === true) {
-      if (unit.position) this.clearPosition(unit.position.current);
-      this.updateUnitPosition(unit, position);
-      return true;
+    const pos = this.getPosition(position)
+    if (pos.available && pos.units.length === 0) {
+      if (unit.position) this.clearPosition(unit.position.current.coordinates)
+      this.updateUnitPosition(unit, position)
+      return true
     }
-    return false;
+    return false
   }
 
   private clearPosition<C extends Point>(p: C) {
-    this.positions[p.x][p.y] = true;
+    const pos = this.getPosition(p)
+    pos.units = []
   }
 
-  private updateUnitPosition<C extends Point>(unit: Unit, position: C) {
-    this.positions[position.x][position.y] = unit;
-    if (unit.position) unit.position.current = position;
+  private updateUnitPosition<C extends Point>(unit: Unit, coords: C) {
+    const pos = this.getPosition(coords)
+    pos.units.push(unit)
+    if (unit.position) unit.position.current.coordinates = coords
     else
       unit.position = {
-        current: position,
-        moveTo: (pos: C) => this.moveUnit(unit, pos)
-      };
+        current: pos,
+        moveTo: (pos: Position) => this.moveUnit(unit, pos.coordinates)
+      }
   }
 }

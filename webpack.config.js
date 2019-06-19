@@ -27,6 +27,10 @@ const HtmlWebpackPlugin = require('html-webpack-plugin')
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 module.exports = {
+	devServer: {
+		port: 8000
+	},
+
 	resolve: {
 		extensions: [".ts", ".js"]
 	},

@@ -1,5 +1,5 @@
 import { Point } from "../geometry/types"
-import Pixel from "../../app/DefaultPixel"
+import Pixel from "../../app/units/Pixel"
 import Player from "../../app/Player"
 
 export interface Color {
