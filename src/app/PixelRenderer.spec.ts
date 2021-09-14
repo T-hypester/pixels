@@ -70,7 +70,7 @@ class DummyCanvas implements UserInterface {
   setPixel(x: number, y: number, color: RGBColor): void {
     throw new Error("Method not implemented.")
   }
-  clearPosition(position: Point): void {
+  clearPoint(position: Point): void {
     throw new Error("Method not implemented.")
   }
   clearPixel(pixel: import("./units/Pixel").default): void {

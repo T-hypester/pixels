@@ -65,7 +65,7 @@ export default class DefaultWorld implements World<Point> {
     else
       unit.position = {
         current: pos,
-        moveTo: (pos: Position) => this.moveUnit(unit, pos.coordinates)
+        //moveTo: (pos: Position) => this.moveUnit(unit, pos.coordinates)
       }
   }
 }

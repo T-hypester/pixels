@@ -37,10 +37,10 @@ export default class HtmlCanvas implements UserInterface {
 
   clearPixel(pixel: Pixel) {
     if (!pixel.position) return
-    this.clearPosition(pixel.position.current.coordinates)
+    this.clearPoint(pixel.position.current.coordinates)
   }
 
-  clearPosition(position: Point) {
+  clearPoint(position: Point) {
     this.ctx.fillStyle = "white"
     this.ctx.fillRect(position.x + 0.5, position.y + 0.5, 1, 1)
   }

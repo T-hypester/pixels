@@ -1,11 +1,11 @@
 import Player from "./Player"
 import { Color } from "../lib/ui/types"
-import { Unit } from "./units/types";
-import { Cartesian2D } from "../lib/geometry/types";
+import { Unit } from "./units/types"
+import { Cartesian2D, Point } from "../lib/geometry/types"
 
-export interface Position {
+export interface Position<CoordsType = Cartesian2D> {
   available: boolean
-  coordinates: Cartesian2D
+  coordinates: CoordsType
   units: Unit[]
 }
 
@@ -19,7 +19,7 @@ export interface World<C> {
   width: number
   deployUnit(unit: Unit, position: C): void
   moveUnit(unit: Unit, position: C): boolean
-  getPosition(position: C): Position
+  getPosition(coordinates: Point): Position
 }
 
 export interface Game {

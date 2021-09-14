@@ -1,27 +1,32 @@
-import { Pathfinder } from "./types";
-import { Point, Geometry } from "../../lib/geometry/types";
-import World from "../World";
-import TaxicabGeometry from "../../lib/geometry/TaxicabGeometry";
+import { Point, Geometry, Cartesian2D } from "../../lib/geometry/types"
+import World from "../World"
+import TaxicabGeometry from "../../lib/geometry/TaxicabGeometry"
+import { Position } from "../types"
 
-export default class DummyPathfinder implements Pathfinder {
-  //private geometry: Geometry<Point>;
-  private world: World;
+import { Pathfinder } from "./types"
+
+export default class DummyPathfinder implements Pathfinder<Cartesian2D> {
+  geometry: Geometry<Cartesian2D>
+  private world: World
 
   constructor(world: World) {
-    //this.geometry = new TaxicabGeometry();
-    this.world = world;
+    this.geometry = new TaxicabGeometry()
+    this.world = world
   }
 
-  findNextPosition(from: Position, to: Position): Position {
-    const v = versor(from, to);
-    const newPosition = { x: from.x + v.x, y: from.y + v.y };
-    return this.world.getPosition(newPosition) === true ? newPosition : from;
+  findNextPosition(from: Point, to: Point): Point {
+    const v = versor(from, to)
+    const newPoint = new Cartesian2D(from.x + v.x, from.y + v.y)
+    const newPosition = this.world.getPosition(newPoint)
+    return newPosition.available && newPosition.units.length === 0
+      ? newPoint
+      : from
   }
 }
 
-function versor(a: Point, b: Point) {
-  return {
-    x: b.x > a.x ? +1 : b.x < a.x ? -1 : 0,
-    y: b.y > a.y ? +1 : b.y < a.y ? -1 : 0
-  };
+function versor(a: Point, b: Point): Point {
+  return new Cartesian2D(
+    b.x > a.x ? +1 : b.x < a.x ? -1 : 0,
+    b.y > a.y ? +1 : b.y < a.y ? -1 : 0
+  )
 }

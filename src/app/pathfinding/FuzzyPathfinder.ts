@@ -1,33 +1,32 @@
-import { Pathfinder } from "./types";
-import { Point, Geometry } from "../../lib/geometry/types";
+import { Pathfinder } from "./types"
+import { Point, Geometry, Cartesian2D } from "../../lib/geometry/types"
 
-import World from "../World";
-import TaxicabGeometry from "../../lib/geometry/TaxicabGeometry";
-import { Position } from "../types";
+import { World } from "../types"
+import TaxicabGeometry from "../../lib/geometry/TaxicabGeometry"
 
 export default class FuzzyPathfinder implements Pathfinder<Point> {
-  geometry: Geometry<Point>;
-  private world: World;
+  geometry: Geometry<Point>
+  private world: World<Cartesian2D>
 
-  constructor(world: World) {
-    this.geometry = new TaxicabGeometry();
-    this.world = world;
+  constructor(world: World<Cartesian2D>) {
+    this.geometry = new TaxicabGeometry()
+    this.world = world
   }
 
-  findNextPosition(from: Position<Point>, to: Position<Point>): Position<Point> {
-    let position = from;
-    let minDist = this.geometry.getDistance(from.coordinates, to.coordinates);
-    const adjacent = this.geometry.getAdjacent(from.coordinates);
+  findNextPosition(from: Point, to: Point): Point {
+    let target = from
+    let minDist = this.geometry.getDistance(from, to)
+    const adjacent = this.geometry.getAdjacent(from)
     for (const tentative of adjacent) {
       const pos = this.world.getPosition(tentative)
       if (pos.available && pos.units.length === 0) {
-        const dist = this.geometry.getDistance(tentative, to.coordinates);
-        if (dist <= minDist) {
-          minDist = dist;
-          position = pos;
+        const dist = this.geometry.getDistance(tentative, to)
+        if (dist < minDist) {
+          minDist = dist
+          target = tentative
         }
       }
     }
-    return position;
+    return target
   }
 }

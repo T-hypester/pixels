@@ -20,7 +20,7 @@ export interface UserInterface extends EventEmitter {
   height: number
 
   setPixel(x: number, y: number, color: Color): void
-  clearPosition(position: Point): void
+  clearPoint(position: Point): void
   clearPixel(pixel: Pixel): void
   //drawPixel(pixel: Pixel): void
   onMove?: (position: Point) => void
