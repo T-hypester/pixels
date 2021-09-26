@@ -1,3 +1,4 @@
+import { Observer, Subject, Subscription } from "rxjs"
 import { NonPlayingUnit, PlayingUnit, Unit, UnitCtor } from "./game"
 
 export type Coordinates = number[]
@@ -7,6 +8,8 @@ export type Grid<Type> = Type[][]
 export class World {
   width: number = 100
   height: number = 100
+
+  private positionUpdates: Subject<Position> = new Subject<Position>()
   private units = new Field<Unit>()
 
   constructor(
@@ -27,10 +30,13 @@ export class World {
    */
   deploy(unit: Unit, pos: Position): this {
     if (this.units.has(pos) && this.units.get(pos) !== unit)
-      throw new Error(`Unit already deployed in (${pos[0]},${pos[1]})`)
+      throw new Error(
+        `Another Unit is already deployed at (${pos[0]},${pos[1]})`
+      )
 
-    unit.position = pos
+    unit.addToWorld(this).position = pos
     this.units.set(pos, unit)
+    this.positionUpdates.next(pos)
     return this
   }
 
@@ -68,13 +74,23 @@ export class World {
     this.remove(from)
     this.deploy(unit!, [
       Math.min(this.width - 1, Math.max(0, to[0])),
-      Math.min(this.height - 1, Math.max(0, to[1])),
+      Math.min(this.height - 1, Math.max(0, to[1]))
     ])
     return this
   }
 
+  /**
+   * Subscribe to position changes
+   *
+   * @param observer RxJS Observer<Position>
+   */
+  addObserver(observer: Observer<Position>): Subscription {
+    return this.positionUpdates.subscribe(observer)
+  }
+
   private remove(from: Position): this {
     this.units.delete(from)
+    this.positionUpdates.next(from)
     return this
   }
 }
@@ -98,7 +114,7 @@ class Field<T> /* implements Map<number[], T> */ {
     thisArg?: any
   ): void {
     this._values.forEach((v, k) => {
-      const pos = k.split(",").map((c) => parseInt(c))
+      const pos = k.split(",").map(c => parseInt(c))
       callbackfn.call(thisArg || this, v, pos /* , this */)
     })
   }

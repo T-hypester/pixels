@@ -15,8 +15,8 @@ export class Game {
     this.world = new World()
   }
 
-  createPlayer(options: { color: Color }): Player {
-    if (this.players.find((p) => p.color === options.color))
+  addPlayer(options: { color: Color }): Player {
+    if (this.players.find(p => p.color === options.color))
       throw new Error(
         `Another player with the same color exists (${options.color})`
       )
@@ -60,7 +60,7 @@ export class Player {
   ): Unit & PropsType {
     const unit = new Unit({
       ...options,
-      player: this as Player,
+      player: this as Player
     } as PropsType)
     this.units.push(unit)
     return unit
@@ -81,19 +81,18 @@ export class Unit {
     return !!this.world && !!this.position
   }
 
-  deploy(world: World, position: Position): this {
+  addToWorld(world: World): this {
     this.world = world
-    this.world.deploy(this, position)
 
     return this
   }
 
   moveBy(amount: Position): this {
-    if (!this.isDeployed()) throw new Error(`Unit is not yet deployed`)
+    if (!this.isDeployed()) throw new Error(`Unit is not deployed anywhere`)
 
     const newPosition: Position = [
       this.position[0] + amount[0],
-      this.position[1] + amount[1],
+      this.position[1] + amount[1]
     ]
     this.world.move(this.position, newPosition)
 

@@ -5,17 +5,17 @@ import { RedPlayer, SomePlayer } from "./__fixtures__/players"
 describe("A Game", () => {
   it("has one or more players", () => {
     const game = HeadlessGame()
-    game.createPlayer(SomePlayer())
+    game.addPlayer(SomePlayer())
 
     expect(game.players).length(1)
   })
 
   it("cannot add two players with the same color", () => {
     const game = HeadlessGame()
-    game.createPlayer(RedPlayer())
+    game.addPlayer(RedPlayer())
 
     expect(() => {
-      game.createPlayer(RedPlayer())
+      game.addPlayer(RedPlayer())
     }).throw()
   })
 
@@ -27,7 +27,7 @@ describe("A Game", () => {
       game.setup()
     }).throw()
 
-    game.createPlayer(player)
+    game.addPlayer(player)
 
     expect(() => {
       game.setup()

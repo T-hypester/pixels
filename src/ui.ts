@@ -41,8 +41,19 @@ export class GameRenderer implements Rendering {
   }
 
   render = () => {
-    this.world.forEachUnit(this.renderUnit)
-    window.requestAnimationFrame(this.render)
+    //this.world.forEachUnit(this.renderUnit)
+    //window.requestAnimationFrame(this.render)
+  }
+
+  private onWorldUpdateError = console.error
+  private onWorldUpdateComplete = console.info
+  private onWorldUpdate = (pos: Position) => {
+    const unit = this.world.getUnitAt(pos)
+    if (!unit) {
+      this.clearPosition(pos)
+      return
+    }
+    this.renderUnit(unit, pos)
   }
 
   private initWorld(game: Game) {
@@ -50,6 +61,12 @@ export class GameRenderer implements Rendering {
     this.world = this.game.world
     this.world.width = this.canvas.width
     this.world.height = this.canvas.height
+
+    this.world.addObserver({
+      error: this.onWorldUpdateError,
+      next: this.onWorldUpdate,
+      complete: this.onWorldUpdateComplete
+    })
   }
 
   private initCanvas(canvas: HTMLCanvasElement) {
@@ -63,9 +80,13 @@ export class GameRenderer implements Rendering {
     this.ctx = ctx
   }
 
+  private clearPosition = (pos: Coordinates): void => {
+    this.ctx.clearRect(pos[0], pos[1], 1, 1)
+  }
+
   private renderUnit = (unit: Unit, pos: Coordinates): void => {
     this.ctx.fillStyle = this.getUnitColor(unit)
-    this.ctx.fillRect(pos[0] + 0.5, pos[1] + 0.5, 1, 1)
+    this.ctx.fillRect(pos[0], pos[1], 1, 1)
   }
 
   private getUnitColor(unit: Unit): Color {
@@ -85,11 +106,11 @@ export class UnitController {
   private arrow: KeyListener
   private unit: Unit
 
-  constructor(options: { unit: Unit; mapping?: KeyCodes }) {
+  constructor(unit: Unit, options: { mapping?: KeyCodes } = {}) {
     this.arrow = new KeyListener({
-      mapping: options.mapping || KeyListener.DEFAULT_MAPPING,
+      mapping: options.mapping || KeyListener.DEFAULT_MAPPING
     })
-    this.unit = options.unit
+    this.unit = unit
   }
 
   capture = () => {
@@ -115,7 +136,7 @@ export class KeyListener {
     up: "ArrowUp",
     right: "ArrowRight",
     down: "ArrowDown",
-    left: "ArrowLeft",
+    left: "ArrowLeft"
   }
 
   up: boolean = false
@@ -129,11 +150,11 @@ export class KeyListener {
     options: {
       mapping: KeyCodes
     } = {
-      mapping: KeyListener.DEFAULT_MAPPING,
+      mapping: KeyListener.DEFAULT_MAPPING
     }
   ) {
     this.keyCodes = options.mapping
-    window.addEventListener("keydown", (e) => {
+    window.addEventListener("keydown", e => {
       switch (e.code) {
         case this.keyCodes.up:
           this.up = true
@@ -150,7 +171,7 @@ export class KeyListener {
       }
     })
 
-    window.addEventListener("keyup", (e) => {
+    window.addEventListener("keyup", e => {
       switch (e.code) {
         case this.keyCodes.up:
           this.up = false

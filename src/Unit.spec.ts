@@ -8,8 +8,8 @@ describe("A deployed Unit", () => {
   let unit: Unit
 
   beforeEach(() => {
-    world = new World()
-    unit = SomePlayer().createUnit(PlayingUnit).deploy(world, [0, 0])
+    unit = SomePlayer().createUnit(PlayingUnit)
+    world = new World().deploy(unit, [0, 0])
   })
 
   it("has a position", () => {
