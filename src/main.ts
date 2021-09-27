@@ -1,6 +1,9 @@
-import { Game, NonPlayingUnit, PlayingUnit } from "./game"
-import { GameRenderer, UnitController } from "./ui"
+import { Game } from "./game"
+import { GameRenderer, PixelController } from "./ui"
+import { NonPlayingUnit, PlayingUnit } from "./units"
+import Pixel from "./units/Pixel"
 import { Position } from "./world"
+const asteroidi:boolean = false
 
 const canvas = getCanvas()
 if (canvas) initGame(canvas)
@@ -17,15 +20,15 @@ function initGame(canvas: HTMLCanvasElement): void {
     canvas
   })
 
-  const redPlayer = game.addPlayer({ color: "red" })
-  const redPixel = redPlayer.createUnit(PlayingUnit)
+  const redPlayer = game.addPlayer({ color: "red", name: "Red" })
+  const redPixel = redPlayer.createUnit<Pixel>(Pixel)
   game.deploy(redPixel, randomPosition(game))
-  const redInput = new UnitController(redPixel)
+  const redInput = new PixelController(redPixel)
 
-  const blackPlayer = game.addPlayer({ color: "black" })
-  const blackPixel = blackPlayer.createUnit(PlayingUnit)
+  const blackPlayer = game.addPlayer({ color: "black", name: "Black" })
+  const blackPixel = blackPlayer.createUnit<Pixel>(Pixel)
   game.deploy(blackPixel, randomPosition(game))
-  const blackInput = new UnitController(blackPixel, {
+  const blackInput = new PixelController(blackPixel, {
     mapping: {
       up: "KeyW",
       right: "KeyD",
@@ -34,11 +37,13 @@ function initGame(canvas: HTMLCanvasElement): void {
     }
   })
 
-  for (let i = 0; i < 10; ) {
-    const pos: Position = randomPosition(game)
-    if (game.world.getUnitAt(pos)) continue
-    game.world.deploy(new NonPlayingUnit(), pos)
-    i++
+  if (asteroidi == true){
+    for (let i = 0; i < 10; ) {
+      const pos: Position = randomPosition(game)
+      if (game.world.getUnitAt(pos)) continue
+      game.world.deploy(new NonPlayingUnit(), pos)
+      i++
+    }
   }
 
   rendering.start()

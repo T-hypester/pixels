@@ -1,5 +1,6 @@
-import { Game, Player, PlayingUnit, Unit } from "./game"
-import { HtmlCanvas } from "./lib"
+import { Game } from "./game"
+import { PlayingUnit, Unit, UnitCtor } from "./units"
+import Pixel from "./units/Pixel"
 import { Coordinates, Position, World } from "./world"
 
 export type Color = string
@@ -102,15 +103,15 @@ type KeyCodes = {
   left: string
 }
 
-export class UnitController {
+export class PixelController {
   private arrow: KeyListener
-  private unit: Unit
+  private pixel: Pixel
 
-  constructor(unit: Unit, options: { mapping?: KeyCodes } = {}) {
+  constructor(unit: Pixel, options: { mapping?: KeyCodes } = {}) {
     this.arrow = new KeyListener({
       mapping: options.mapping || KeyListener.DEFAULT_MAPPING
     })
-    this.unit = unit
+    this.pixel = unit
   }
 
   capture = () => {
@@ -121,11 +122,12 @@ export class UnitController {
     if (this.arrow.down) amount[1] += 1
 
     try {
-      this.unit.moveBy(amount)
+      this.pixel.moveBy(amount)
       window.requestAnimationFrame(this.capture)
     } catch (e) {
+      const name = this.pixel.player.name
       console.error(e)
-      alert("BOOOM!")
+      alert(`${name} goes BOOOM!`)
       window.location.reload()
     }
   }

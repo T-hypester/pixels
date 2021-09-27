@@ -1,9 +1,16 @@
 import { expect } from "chai"
-import { Game, Player, PlayingUnit } from "./game"
+import { Game, Player } from "./game"
+import { PlayingUnit } from "./units"
 
 import { SomePlayer } from "./__fixtures__/players"
 
 describe("A Player", () => {
+  it("has a name", () => {
+    const player = SomePlayer()
+
+    expect(player).property('name')
+  })
+
   it("needs to have a color", () => {
     expect(() => new Player({ color: "", game: new Game() })).throw()
   })

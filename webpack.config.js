@@ -1,4 +1,3 @@
-const webpack = require('webpack');
 const path = require('path');
 
 const HtmlWebpackPlugin = require('html-webpack-plugin')
@@ -66,6 +65,7 @@ module.exports = {
 	},
 
 	output: {
+		path: path.resolve(__dirname, 'docs'),
 		filename: '[name].[chunkhash].js'
 	},
 

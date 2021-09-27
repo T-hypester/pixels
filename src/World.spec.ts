@@ -1,6 +1,7 @@
-import { assert, expect } from "chai"
+import { expect } from "chai"
 import { Observer } from "rxjs"
-import { NonPlayingUnit, PlayingUnit, Unit } from "./game"
+import { NonPlayingUnit, PlayingUnit } from "./units"
+
 import { Position, World } from "./world"
 import { SomePlayer } from "./__fixtures__/players"
 

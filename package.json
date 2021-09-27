@@ -7,7 +7,7 @@
     "test": "mocha --require ./src/babel-register --watch-extensions ts './src/**/*.spec.ts'",
     "test:watch": "yarn test --watch",
     "start": "webpack-dev-server",
-    "build": "webpack"
+    "build": "rm -rf docs/ && webpack"
   },
   "devDependencies": {
     "@babel/core": "^7.4.5",

@@ -1,5 +1,6 @@
 import { Observer, Subject, Subscription } from "rxjs"
-import { NonPlayingUnit, PlayingUnit, Unit, UnitCtor } from "./game"
+import { Unit } from "./units"
+import Pixel from "./units/Pixel"
 
 export type Coordinates = number[]
 export type Position = [number, number]
@@ -70,9 +71,9 @@ export class World {
     if (!this.units.has(from))
       throw new Error(`No unit found at (${from[0]},${from[1]})`)
 
-    const unit = this.units.get(from)
+    const unit = this.units.get(from)!
     this.remove(from)
-    this.deploy(unit!, [
+    this.deploy(unit, [
       Math.min(this.width - 1, Math.max(0, to[0])),
       Math.min(this.height - 1, Math.max(0, to[1]))
     ])
@@ -88,7 +89,13 @@ export class World {
     return this.positionUpdates.subscribe(observer)
   }
 
-  private remove(from: Position): this {
+  /**
+   * Remove unit from a world position
+   *
+   * @param from Postion from which to remove units
+   * @returns this
+   */
+  remove(from: Position): this {
     this.units.delete(from)
     this.positionUpdates.next(from)
     return this

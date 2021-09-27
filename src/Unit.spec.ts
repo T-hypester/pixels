@@ -1,11 +1,11 @@
 import { expect } from "chai"
-import { PlayingUnit, Unit } from "./game"
+import { AbstractUnit, PlayingUnit } from "./units"
 import { World } from "./world"
 import { SomePlayer } from "./__fixtures__/players"
 
 describe("A deployed Unit", () => {
   let world = new World()
-  let unit: Unit
+  let unit: AbstractUnit
 
   beforeEach(() => {
     unit = SomePlayer().createUnit(PlayingUnit)
