@@ -1,6 +1,5 @@
 import { Color } from "./ui"
 import { PlayingUnit, Unit, UnitCtor } from "./units"
-import TraceElement from "./units/TraceElement"
 import { Position, World } from "./world"
 
 export class Game {

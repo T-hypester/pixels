@@ -1,7 +1,7 @@
 import { DeployedUnit, Health, PlayingUnit, Unit } from "."
 
 import { Position, World } from "../world"
-import TraceElement from "./TraceElement"
+import TailElement from "./TailElement"
 
 export default class Pixel extends PlayingUnit {
   addToWorld(world: World): this {
@@ -33,7 +33,7 @@ export default class Pixel extends PlayingUnit {
   private leaveTrace(pos: Position) {
     if (!this.isDeployed()) throw new Error(`Unit is not deployed anywhere`)
 
-    const trace = new TraceElement({ player: this.player })
+    const trace = new TailElement({ player: this.player })
     this.world.deploy(trace, pos)
   }
 }
