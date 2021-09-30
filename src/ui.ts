@@ -156,38 +156,52 @@ export class KeyListener {
     }
   ) {
     this.keyCodes = options.mapping
-    window.addEventListener("keydown", e => {
-      switch (e.code) {
-        case this.keyCodes.up:
-          this.up = true
-          return
-        case this.keyCodes.right:
-          this.right = true
-          return
-        case this.keyCodes.down:
-          this.down = true
-          return
-        case this.keyCodes.left:
-          this.left = true
-          return
-      }
-    })
+    window.addEventListener("keydown", this.onKeydown)
+    //window.addEventListener("keyup", this.onKeyup)
+  }
 
-    window.addEventListener("keyup", e => {
-      switch (e.code) {
-        case this.keyCodes.up:
-          this.up = false
-          return
-        case this.keyCodes.right:
-          this.right = false
-          return
-        case this.keyCodes.down:
-          this.down = false
-          return
-        case this.keyCodes.left:
-          this.left = false
-          return
-      }
-    })
+  onKeydown = (e: KeyboardEvent) => {
+    switch (e.code) {
+      case this.keyCodes.up:
+        this.reset()
+        this.up = true
+        return
+      case this.keyCodes.right:
+        this.reset()
+        this.right = true
+        return
+      case this.keyCodes.down:
+        this.reset()
+        this.down = true
+        return
+      case this.keyCodes.left:
+        this.reset()
+        this.left = true
+        return
+    }
+  }
+
+  onKeyup =  (e: KeyboardEvent) => {
+    switch (e.code) {
+      case this.keyCodes.up:
+        this.up = false
+        return
+      case this.keyCodes.right:
+        this.right = false
+        return
+      case this.keyCodes.down:
+        this.down = false
+        return
+      case this.keyCodes.left:
+        this.left = false
+        return
+    }
+  }
+
+  private reset () {
+    this.up = false
+    this.down = false
+    this.left = false
+    this.right = false
   }
 }
