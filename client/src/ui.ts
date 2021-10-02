@@ -1,4 +1,6 @@
-import { Game } from "./game"
+import { io, Socket } from "socket.io-client"
+
+import { Game, Player } from "./game"
 import { PlayingUnit, Unit, UnitCtor } from "./units"
 import Pixel from "./units/Pixel"
 import { Coordinates, Position, World } from "./world"
@@ -106,12 +108,16 @@ type KeyCodes = {
 export class PixelController {
   private arrow: KeyListener
   private pixel: Pixel
+  private player: Player
+  private socket: Socket
 
   constructor(unit: Pixel, options: { mapping?: KeyCodes } = {}) {
+    this.socket = io("http://localhost:3000")
     this.arrow = new KeyListener({
       mapping: options.mapping || KeyListener.DEFAULT_MAPPING
     })
     this.pixel = unit
+    this.player = unit.player
   }
 
   capture = () => {
@@ -123,6 +129,10 @@ export class PixelController {
 
     try {
       this.pixel.moveBy(amount)
+      this.socket.emit('pixel.moveBy', {
+        player: this.player.name,
+        amount
+      })
       window.requestAnimationFrame(this.capture)
     } catch (e) {
       const name = this.pixel.player.name
@@ -181,7 +191,7 @@ export class KeyListener {
     }
   }
 
-  onKeyup =  (e: KeyboardEvent) => {
+  onKeyup = (e: KeyboardEvent) => {
     switch (e.code) {
       case this.keyCodes.up:
         this.up = false
@@ -198,7 +208,7 @@ export class KeyListener {
     }
   }
 
-  private reset () {
+  private reset() {
     this.up = false
     this.down = false
     this.left = false
