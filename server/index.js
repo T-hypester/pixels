@@ -8,6 +8,8 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server);
 
+const players = {};
+
 app.use(express.static(path.resolve(__dirname, '..', 'docs')))
 
 app.get('/', (req, res) => {
@@ -15,11 +17,25 @@ app.get('/', (req, res) => {
 });
 
 io.on('connection', (socket) => {
-  console.log('a user connected');
+  console.log('a client connected');
+
+  socket.on('register', (msg) => {
+    players[msg.name] = {
+      name: msg.name, socket
+    }
+    console.dir(players);
+  });
 
   socket.on('pixel.moveBy', (msg) => {
-    console.dir(msg);
+    Object.values(players).forEach(player => {
+      if (player.name == msg.player){
+        return
+      }
+      player.socket.emit('pixel.moveBy', {...msg, player:"Black"})
+
+    })
   });
+
 });
 
 server.listen(3000, () => {

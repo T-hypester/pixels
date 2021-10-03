@@ -112,13 +112,24 @@ export class PixelController {
   private socket: Socket
 
   constructor(unit: Pixel, options: { mapping?: KeyCodes } = {}) {
-    this.socket = io("http://localhost:3000")
+    this.socket = io("ws://localhost:3000")
+    this.register()
     this.arrow = new KeyListener({
       mapping: options.mapping || KeyListener.DEFAULT_MAPPING
     })
     this.pixel = unit
     this.player = unit.player
   }
+
+  register() {
+    this.socket.once("connect", () =>{
+      console.log('register', this.socket)
+    this.socket.emit("register", {
+      name: this.player.name
+    })
+    })
+  }
+
 
   capture = () => {
     const amount: Position = [0, 0]
@@ -127,9 +138,14 @@ export class PixelController {
     if (this.arrow.right) amount[0] += 1
     if (this.arrow.down) amount[1] += 1
 
+    if (amount[0] === 0 && amount[1] === 0) {
+      window.requestAnimationFrame(this.capture)
+      return
+    }
+
     try {
       this.pixel.moveBy(amount)
-      this.socket.emit('pixel.moveBy', {
+      this.socket.emit("pixel.moveBy", {
         player: this.player.name,
         amount
       })
@@ -143,6 +159,44 @@ export class PixelController {
   }
 }
 
+export class RemotePixelController {
+  private pixel: Pixel
+  private player: Player
+  private socket: Socket
+
+  constructor(unit: Pixel) {
+    this.socket = io("ws://localhost:3000")
+    this.register()
+    this.socket.on('pixel.moveBy', this.capture)
+    this.pixel = unit
+    this.player = unit.player
+  }
+
+  register() {
+    this.socket.once("connect", () =>{
+      console.log('register', this.socket)
+    this.socket.emit("register", {
+      name: this.player.name
+    })
+    })
+  }
+
+  capture = (msg:any) => {
+    if(msg.player != this.player.name){
+      return
+    }
+    const amount:Position = msg.amount
+
+    try {
+      this.pixel.moveBy(amount)
+    } catch (e) {
+      const name = this.pixel.player.name
+      console.error(e)
+      alert(`${name} goes BOOOM!`)
+      window.location.reload()
+    }
+  }
+}
 export class KeyListener {
   static DEFAULT_MAPPING: KeyCodes = {
     up: "ArrowUp",

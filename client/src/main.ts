@@ -1,5 +1,5 @@
 import { Game } from "./game"
-import { GameRenderer, PixelController } from "./ui"
+import { GameRenderer, PixelController, RemotePixelController } from "./ui"
 import { NonPlayingUnit, PlayingUnit } from "./units"
 import Pixel from "./units/Pixel"
 import { Position } from "./world"
@@ -44,14 +44,7 @@ function initGame(canvas: HTMLCanvasElement): void {
   const blackPlayer = game.addPlayer({ color: "black", name: "Black" })
   const blackPixel = blackPlayer.createUnit<Pixel>(Pixel)
   game.deploy(blackPixel, randomPosition(game))
-  const blackInput = new PixelController(blackPixel, {
-    mapping: {
-      up: "KeyW",
-      right: "KeyD",
-      down: "KeyS",
-      left: "KeyA"
-    }
-  })
+  const blackInput = new RemotePixelController(blackPixel)
 
   if (asteroidi == true){
     for (let i = 0; i < 10; ) {
@@ -64,7 +57,6 @@ function initGame(canvas: HTMLCanvasElement): void {
 
   rendering.start()
   redInput.capture()
-  blackInput.capture()
 }
 
 function randomPosition(game: Game): Position {
