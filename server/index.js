@@ -24,6 +24,13 @@ io.on('connection', (socket) => {
       name: msg.name, socket
     }
     console.dir(players);
+    Object.values(players).forEach(player => {
+      if (player.name == msg.player){
+        return
+      }
+      player.socket.emit('register', msg)
+
+    })
   });
 
   socket.on('pixel.moveBy', (msg) => {
@@ -31,7 +38,7 @@ io.on('connection', (socket) => {
       if (player.name == msg.player){
         return
       }
-      player.socket.emit('pixel.moveBy', {...msg, player:"Black"})
+      player.socket.emit('pixel.moveBy', msg)
 
     })
   });

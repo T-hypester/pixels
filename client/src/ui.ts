@@ -105,14 +105,14 @@ type KeyCodes = {
   left: string
 }
 
-export class PixelController {
+export class LocalPixelController {
   private arrow: KeyListener
   private pixel: Pixel
   private player: Player
   private socket: Socket
 
-  constructor(unit: Pixel, options: { mapping?: KeyCodes } = {}) {
-    this.socket = io("ws://localhost:3000")
+  constructor(unit: Pixel, options: { socket:Socket, mapping?: KeyCodes }) {
+    this.socket = options.socket
     this.register()
     this.arrow = new KeyListener({
       mapping: options.mapping || KeyListener.DEFAULT_MAPPING
@@ -122,14 +122,14 @@ export class PixelController {
   }
 
   register() {
-    this.socket.once("connect", () =>{
-      console.log('register', this.socket)
-    this.socket.emit("register", {
-      name: this.player.name
-    })
+    this.socket.once("connect", () => {
+      console.log("register", this.socket)
+      this.socket.emit("register", {
+        name: this.player.name,
+        pos: this.pixel.position
+      })
     })
   }
-
 
   capture = () => {
     const amount: Position = [0, 0]
@@ -164,28 +164,28 @@ export class RemotePixelController {
   private player: Player
   private socket: Socket
 
-  constructor(unit: Pixel) {
-    this.socket = io("ws://localhost:3000")
+  constructor(unit: Pixel, options:{socket:Socket}) {
+    this.socket = options.socket
     this.register()
-    this.socket.on('pixel.moveBy', this.capture)
+    this.socket.on("pixel.moveBy", this.capture)
     this.pixel = unit
     this.player = unit.player
   }
 
   register() {
-    this.socket.once("connect", () =>{
-      console.log('register', this.socket)
-    this.socket.emit("register", {
-      name: this.player.name
-    })
+    this.socket.once("connect", () => {
+      console.log("register", this.socket)
+      this.socket.emit("register", {
+        name: this.player.name
+      })
     })
   }
 
-  capture = (msg:any) => {
-    if(msg.player != this.player.name){
+  capture = (msg: any) => {
+    if (msg.player != this.player.name) {
       return
     }
-    const amount:Position = msg.amount
+    const amount: Position = msg.amount
 
     try {
       this.pixel.moveBy(amount)

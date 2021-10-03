@@ -27,10 +27,10 @@ export class Game {
   }
 
   setup(): void {
-    if (this.players.length < 1)
+    /* if (this.players.length < 1)
       throw new Error(
         `Not enough players: ${this.players.length}. (At least one player is required)`
-      )
+      ) */
   }
 }
 
