@@ -1,6 +1,8 @@
 <html>
 
 <head>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
   <style type="text/css">
     :root,
     html,
@@ -10,7 +12,7 @@
     }
 
     body {
-      background: black;
+      background: -webkit-gradient(linear, left top, right top, from(#181e2c), to(#f76b0e)) fixed;
       display: flex;
       align-content: center;
       align-items: center;
@@ -26,15 +28,60 @@
   </style>
 </head>
 
-<body>
-  <div>
-    <div>
-      <form id="form"><input name="name" type="text" placeholder="player name"/><input type="submit" value="Gioca"></form>
-    </div>
-    <div>
-      <canvas id="canvas" height="300" width="300"></canvas>
+<body onload="opennamemodal()">
+
+  <!-- Modal -->
+  <div class="modal fade" id="nameModal" tabindex="-1" aria-labelledby="nameModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content" style="background: rgb(0, 0, 0);">
+        <form id="form">
+        <div class="modal-header" style="color: white;">
+          <h5 class="modal-title" id="nameModalLabel">Input name!</h5>
+        </div>
+        <div class="modal-body">
+            <div class="mb-3">
+              <label for="name" class="col-form-label" style="color: white;">Name:</label>
+              <input type="text" class="form-control" id="name">
+            </div>
+        </div>
+        <div class="modal-footer">
+            <h6 style="color: red" class="text-start" id="rtext"></h6>
+            <button class="btn btn-primary" type="submit" >Save changes</button>
+        </div>
+      </form">
+      </div>
     </div>
   </div>
+
+  <canvas id="canvas" height="200" width="200"></canvas>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-/bQdsTh/da6pkI1MST/rWKFNjaCP5gBSY4sEBT38Q/9RBh9AH40zEOg7Hlq2THRZ"
+    crossorigin="anonymous"></script>
+  <script>
+
+    var nameModal = new bootstrap.Modal(document.getElementById('nameModal'), {
+      keyboard: false,
+      backdrop: false
+    })
+    function opennamemodal() {
+      nameModal.show()
+    }
+
+    const form = document.getElementById('form');
+    form.onsubmit = nameTest
+
+    function nameTest() {
+      event.preventDefault();
+      inname = document.getElementById('name').value
+      if ((inname == "") || (inname == "undefined")) {
+        document.getElementById("rtext").innerHTML = "Not a valid input";
+      }
+      else{
+        name = inname
+        nameModal.hide()
+      }
+    }
+  </script>
 </body>
 
 </html>

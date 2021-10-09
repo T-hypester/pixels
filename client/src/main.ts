@@ -24,6 +24,9 @@ function getCanvas(): HTMLCanvasElement | null {
 function registerLocalPlayer(evt:SubmitEvent){
   evt.preventDefault()
   const name = evt.target?.elements.name.value
+  if((name == "") || (name == "undefined")){
+    return
+  }
   const redPlayer = game.addPlayer({ color: "red", name: name })
   const redPixel = redPlayer.createUnit<Pixel>(Pixel)
   game.deploy(redPixel, randomPosition(game))
