@@ -38,12 +38,12 @@
           <h5 class="modal-title" id="nameModalLabel">Input name!</h5>
         </div>
         <div class="modal-body">
-          <form>
+          <form id="form">
             <div class="mb-3">
               <label for="name" class="col-form-label" style="color: white;">Name:</label>
               <input type="text" class="form-control" id="name">
             </div>
-          </form>
+          </form">
         </div>
         <div class="modal-footer">
           <button type="button" class="btn btn-primary" onclick="nameTest()">Save changes</button>
@@ -66,7 +66,11 @@
       nameModal.show()
     }
 
+    const form = document.getElementById('form');
+    form.onsubmit = nameTest
+
     function nameTest() {
+      event.preventDefault();
       name = document.getElementById('name').value
       if ((name == "") || (name == "undefined")) {
         alert("Il campo name è obbligatorio.");
